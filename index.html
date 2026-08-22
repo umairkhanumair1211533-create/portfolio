@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Umair Khan · Professional Portfolio</title>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ---------- RESET & GLOBAL ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: #0b0e1a;  /* dark sophisticated background */
+      color: #eef2f7;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* ---------- SCROLLBAR ---------- */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #141a2b; }
+    ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
+
+    /* ---------- CONTAINER ---------- */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ---------- HEADER / NAV ---------- */
+    header {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(4px);
+      background: rgba(11, 14, 26, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      font-weight: 400;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #3b82f6;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover { color: #f0f4ff; }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ---------- HERO SECTION ---------- */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 3.5rem 0 4rem;
+      gap: 2rem;
+    }
+
+    .hero-content {
+      flex: 1 1 45%;
+    }
+
+    .hero-content .badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.15);
+      padding: 0.3rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      color: #93bbfc;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      margin-bottom: 1rem;
+      letter-spacing: 0.3px;
+    }
+
+    .hero h1 {
+      font-size: 3.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(145deg, #f0f4ff, #93bbfc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .typing-wrapper {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: #b9c9f0;
+      margin: 0.5rem 0 1.2rem;
+      min-height: 3.5rem;
+    }
+
+    .typing-wrapper .static-text { color: #b9c9f0; }
+    .typing-wrapper .dynamic-text {
+      color: #60a5fa;
+      font-weight: 500;
+      border-right: 3px solid #60a5fa;
+      padding-right: 6px;
+      animation: blink-caret 0.8s step-end infinite;
+    }
+
+    @keyframes blink-caret {
+      0%, 100% { border-color: #60a5fa; }
+      50% { border-color: transparent; }
+    }
+
+    .hero-description {
+      max-width: 500px;
+      color: #b9c9f0;
+      margin: 1.5rem 0 2rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.8rem 2.2rem;
+      border-radius: 60px;
+      font-weight: 500;
+      text-decoration: none;
+      background: #1e293b;
+      color: #eef2f7;
+      border: 1px solid #334155;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      border: 1px solid #2563eb;
+      color: white;
+      box-shadow: 0 8px 20px -8px #1e3a8a;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px -8px #1e3a8a;
+    }
+
+    .btn-outline:hover {
+      background: #1e293b;
+      border-color: #60a5fa;
+    }
+
+    /* ---------- 3D PREMIUM RIGHT SIDE ---------- */
+    .hero-3d {
+      flex: 1 1 40%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 340px;
+      perspective: 900px;
+    }
+
+    .scene-3d {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      transform-style: preserve-3d;
+      animation: float-scene 6s ease-in-out infinite;
+    }
+
+    @keyframes float-scene {
+      0%, 100% { transform: translateY(0px) rotateX(-5deg) rotateY(0deg); }
+      50% { transform: translateY(-18px) rotateX(5deg) rotateY(12deg); }
+    }
+
+    /* floating cube */
+    .cube {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      top: 60px;
+      left: 60px;
+      transform-style: preserve-3d;
+      animation: rotateCube 12s linear infinite;
+    }
+
+    .cube .face {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1.5px solid rgba(96, 165, 250, 0.7);
+      border-radius: 10px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+    }
+
+    .cube .face:nth-child(1) { transform: rotateY(0deg) translateZ(40px); }
+    .cube .face:nth-child(2) { transform: rotateY(90deg) translateZ(40px); }
+    .cube .face:nth-child(3) { transform: rotateY(180deg) translateZ(40px); }
+    .cube .face:nth-child(4) { transform: rotateY(-90deg) translateZ(40px); }
+    .cube .face:nth-child(5) { transform: rotateX(90deg) translateZ(40px); }
+    .cube .face:nth-child(6) { transform: rotateX(-90deg) translateZ(40px); }
+
+    @keyframes rotateCube {
+      0% { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    /* digital sphere */
+    .sphere {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      top: 85px;
+      left: 85px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #1e3a8a, #0b1a3a);
+      box-shadow: 0 0 40px #2563eb55, inset 0 -10px 30px #00000066;
+      animation: pulse-sphere 4s infinite alternate;
+      border: 1px solid #3b82f6;
+    }
+    .sphere::after {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px dashed rgba(96, 165, 250, 0.5);
+      animation: spin-ring 10s linear infinite;
+    }
+
+    @keyframes pulse-sphere {
+      0% { transform: scale(1); box-shadow: 0 0 30px #2563eb55; }
+      100% { transform: scale(1.08); box-shadow: 0 0 60px #3b82f6aa; }
+    }
+
+    /* rotating tech ring */
+    .ring {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      top: 40px;
+      left: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(96, 165, 250, 0.25);
+      animation: rotate-ring 16s linear infinite;
+      box-shadow: 0 0 30px #2563eb33, inset 0 0 30px #2563eb11;
+    }
+    .ring::before {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: #60a5fa;
+      border-radius: 50%;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 30px #3b82f6;
+    }
+
+    @keyframes rotate-ring {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* geometric elements */
+    .geo-dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #a78bfa;
+      border-radius: 50%;
+      box-shadow: 0 0 20px #7c3aed;
+      animation: move-dot 8s infinite alternate;
+    }
+    .geo-dot:nth-of-type(1) { top: 20px; left: 20px; animation-delay: 0s; }
+    .geo-dot:nth-of-type(2) { bottom: 30px; right: 20px; animation-delay: 2s; width: 20px; height: 20px; background: #3b82f6; }
+
+    @keyframes move-dot {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(25px, -18px) scale(1.3); }
+    }
+
+    /* ---------- SECTION TITLE ---------- */
+    .section-title {
+      font-size: 2.3rem;
+      font-weight: 600;
+      margin-bottom: 2.5rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #eef2f7, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 0.4rem;
+    }
+
+    /* ---------- CARDS (about, education, hobbies, skills) ---------- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin: 2.5rem 0;
+    }
+
+    .card {
+      background: #141a2b;
+      padding: 1.8rem 1.5rem;
+      border-radius: 32px;
+      border: 1px solid #1e2a41;
+      transition: 0.25s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      backdrop-filter: blur(2px);
+      transform: translateY(0);
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: #3b82f6;
+      box-shadow: 0 16px 40px -12px #1e3a8a;
+    }
+
+    .card i {
+      font-size: 2rem;
+      color: #60a5fa;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p, .card li {
+      color: #b9c9f0;
+      list-style: none;
+      font-size: 0.95rem;
+    }
+
+    .card ul { padding-left: 0; }
+    .card ul li { margin: 0.3rem 0; }
+
+    .education-card .marks {
+      background: #1e293b;
+      padding: 0.2rem 0.8rem;
+      border-radius: 50px;
+      display: inline-block;
+      margin-top: 6px;
+      font-weight: 500;
+      color: #93bbfc;
+      border: 1px solid #2d3b55;
+    }
+
+    /* ---------- SKILLS PROGRESS (animated) ---------- */
+    .skill-item {
+      margin: 0.8rem 0;
+    }
+    .skill-bar {
+      background: #1e2a41;
+      border-radius: 40px;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .skill-fill {
+      height: 10px;
+      border-radius: 40px;
+      background: linear-gradient(90deg, #2563eb, #a78bfa);
+      width: 0%;
+      animation: fill-skill 1.5s ease forwards;
+    }
+    @keyframes fill-skill {
+      from { width: 0%; }
+      to { width: var(--fill); }
+    }
+
+    .skill-item span { font-weight: 400; color: #cbd5e1; }
+
+    /* ---------- CONTACT FORM ---------- */
+    .contact-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      margin: 2rem 0 3rem;
+    }
+
+    .contact-info {
+      flex: 1 1 250px;
+    }
+
+    .contact-info p {
+      margin: 0.8rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .contact-info i {
+      width: 28px;
+      color: #60a5fa;
+    }
+
+    .contact-form {
+      flex: 2 1 380px;
+      background: #141a2b;
+      padding: 2rem 2rem 2.5rem;
+      border-radius: 36px;
+      border: 1px solid #1e2a41;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      margin: 0.5rem 0 1.2rem;
+      background: #1b2337;
+      border: 1px solid #2a3650;
+      border-radius: 60px;
+      color: #eef2f7;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px #2563eb33;
+    }
+
+    .contact-form textarea {
+      border-radius: 24px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .contact-form button {
+      background: #2563eb;
+      border: none;
+      padding: 0.9rem 2.8rem;
+      border-radius: 60px;
+      font-weight: 600;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 8px 20px -8px #1e3a8a;
+    }
+
+    .contact-form button:hover {
+      background: #1d4ed8;
+      transform: scale(1.02);
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      margin-top: 4rem;
+      padding: 2rem 0;
+      border-top: 1px solid #1e2a41;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    footer .footer-quote {
+      margin-top: 0.6rem;
+      font-style: italic;
+      color: #64748b;
+    }
+
+    /* ---------- SCROLL REVEAL (simple intersection) ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: 0.8s cubic-bezier(0.2, 0.9, 0.1, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 800px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero-3d { min-height: 260px; }
+      .scene-3d { transform: scale(0.8); }
+      .nav-links { gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+      .btn-group { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Umair Khan</div>
+        <div class="nav-links">
+          <a href="#about">About</a>
+          <a href="#education">Education</a>
+          <a href="#skills">Skills</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <div class="badge"><i class="fas fa-code"></i> Web Developer · IT Student</div>
+        <h1>Umair <span>Khan</span></h1>
+        <div class="typing-wrapper">
+          <span class="static-text">Transforming ideas into </span>
+          <span class="dynamic-text" id="typed-text"></span>
+        </div>
+        <p class="hero-description">
+          Creative learner passionate about modern web experiences, technology, and continuous growth.
+        </p>
+        <div class="btn-group">
+          <a href="#contact" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Contact</a>
+          <a href="#about" class="btn btn-outline"><i class="fas fa-chevron-down"></i> Explore</a>
+        </div>
+      </div>
+      <!-- 3D Premium Right Side -->
+      <div class="hero-3d">
+        <div class="scene-3d">
+          <div class="cube">
+            <div class="face"></div><div class="face"></div><div class="face"></div>
+            <div class="face"></div><div class="face"></div><div class="face"></div>
+          </div>
+          <div class="sphere"></div>
+          <div class="ring"></div>
+          <div class="geo-dot"></div>
+          <div class="geo-dot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="reveal">
+      <h2 class="section-title">About Me</h2>
+      <div class="card-grid">
+        <div class="card">
+          <i class="fas fa-user-astronaut"></i>
+          <h3>Hello! I'm Umair</h3>
+          <p>22 years old, passionate about technology, web development, books, and lifelong learning. I strive to improve my skills and explore new opportunities in IT.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-rocket"></i>
+          <h3>Mission</h3>
+          <p>Building modern digital experiences that merge creativity with robust technology. Always curious, always coding.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education" class="reveal">
+      <h2 class="section-title">Education</h2>
+      <div class="card-grid">
+        <div class="card education-card">
+          <i class="fas fa-graduation-cap"></i>
+          <h3>Matriculation</h3>
+          <p>🎓 Government High School Balwan</p>
+          <span class="marks">📊 Marks: 812</span>
+        </div>
+        <div class="card education-card">
+          <i class="fas fa-university"></i>
+          <h3>FSC</h3>
+          <p>🏫 Government Shaheed Abdul Majeed College Bhatsera</p>
+          <span class="marks">📊 Marks: 990</span>
+        </div>
+        <div class="card education-card">
+          <i class="fas fa-laptop-code"></i>
+          <h3>DIT / IT Studies</h3>
+          <p>💻 Chandra Polytechnic Institute</p>
+          <span class="marks">📖 Currently Studying</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- WEB DEV + HOBBIES -->
+    <section id="web-dev" class="reveal">
+      <h2 class="section-title">Web Development</h2>
+      <div class="card-grid">
+        <div class="card">
+          <i class="fab fa-html5"></i>
+          <h3>HTML · CSS · JS</h3>
+          <p>Responsive design, modern layouts, and interactive front-end.</p>
+        </div>
+        <div class="card">
+          <i class="fas fa-mobile-alt"></i>
+          <h3>Responsive · Modern</h3>
+          <p>Building websites that work beautifully on every device.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOBBIES -->
+    <section id="hobbies" class="reveal">
+      <h2 class="section-title">Hobbies</h2>
+      <div class="card-grid">
+        <div class="card"><i class="fas fa-book"></i><h3>Reading Books</h3></div>
+        <div class="card"><i class="fas fa-cricket-ball"></i><h3>Cricket</h3></div>
+        <div class="card"><i class="fas fa-shuttlecock"></i><h3>Badminton</h3></div>
+        <div class="card"><i class="fas fa-microchip"></i><h3>New Technologies</h3></div>
+        <div class="card"><i class="fas fa-users"></i><h3>Time with Friends</h3></div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="reveal">
+      <h2 class="section-title">Skills</h2>
+      <div class="card-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="card">
+          <i class="fas fa-code"></i>
+          <h3>Web Development</h3>
+          <div class="skill-item"><span>HTML & CSS</span><div class="skill-bar"><div class="skill-fill" style="--fill:85%"></div></div></div>
+          <div class="skill-item"><span>JavaScript</span><div class="skill-bar"><div class="skill-fill" style="--fill:70%"></div></div></div>
+          <div class="skill-item"><span>Responsive Design</span><div class="skill-bar"><div class="skill-fill" style="--fill:80%"></div></div></div>
+        </div>
+        <div class="card">
+          <i class="fas fa-tools"></i>
+          <h3>Tools & Soft</h3>
+          <div class="skill-item"><span>MS Office</span><div class="skill-bar"><div class="skill-fill" style="--fill:90%"></div></div></div>
+          <div class="skill-item"><span>Creativity</span><div class="skill-bar"><div class="skill-fill" style="--fill:88%"></div></div></div>
+          <div class="skill-item"><span>Teamwork</span><div class="skill-bar"><div class="skill-fill" style="--fill:92%"></div></div></div>
+          <div class="skill-item"><span>Problem Solving</span><div class="skill-bar"><div class="skill-fill" style="--fill:78%"></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="reveal">
+      <h2 class="section-title">Contact</h2>
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <p><i class="fas fa-envelope"></i> umair.khan@email.com</p>
+          <p><i class="fas fa-phone-alt"></i> +92 300 1234567</p>
+          <p><i class="fab fa-github"></i> github.com/umairdev</p>
+          <p><i class="fab fa-linkedin"></i> linkedin.com/in/umairkhan</p>
+          <p><i class="fas fa-globe"></i> umair.dev</p>
+        </div>
+        <div class="contact-form">
+          <h3 style="margin-bottom: 1rem;">Send a Message</h3>
+          <form>
+            <input type="text" placeholder="Full Name" required />
+            <input type="email" placeholder="Email Address" required />
+            <input type="tel" placeholder="Phone Number" />
+            <input type="text" placeholder="Subject" />
+            <textarea placeholder="Your Message..."></textarea>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p><strong>Umair Khan</strong> · Web Developer · IT Student · Lifelong Learner</p>
+      <p class="footer-quote">“Success comes from continuous learning and dedication.”</p>
+    </div>
+  </footer>
+
+  <!-- TYPING ANIMATION -->
+  <script>
+    (function() {
+      const words = ['digital experiences.', 'modern websites.', 'creative solutions.', 'clean code.'];
+      let i = 0, j = 0, isDeleting = false;
+      const typed = document.getElementById('typed-text');
+
+      function typeEffect() {
+        const current = words[i];
+        if (!isDeleting && j <= current.length) {
+          typed.textContent = current.substring(0, j);
+          j++;
+          setTimeout(typeEffect, 140);
+        } else if (isDeleting && j >= 0) {
+          typed.textContent = current.substring(0, j);
+          j--;
+          setTimeout(typeEffect, 80);
+        } else {
+          isDeleting = !isDeleting;
+          if (!isDeleting) {
+            i = (i + 1) % words.length;
+          }
+          setTimeout(typeEffect, 300);
+        }
+      }
+      typeEffect();
+
+      // SCROLL REVEAL
+      const reveals = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15 });
+      reveals.forEach(el => revealObserver.observe(el));
+
+      // additional fade for cards on load
+      document.querySelectorAll('.card').forEach((card, idx) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          card.style.transition = '0.6s cubic-bezier(0.2, 0.9, 0.1, 1)';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 150 + idx * 70);
+      });
+
+    })();
+  </script>
+</body>
+</html> 
