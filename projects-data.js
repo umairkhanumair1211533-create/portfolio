@@ -1,6 +1,7 @@
 window.PROJECTS = [
   {
     id: "mobilestore",
+    aliases: ["mobile-store"],
     title: "MobileStore",
     category: "E-Commerce Website",
     description:
@@ -30,6 +31,7 @@ window.PROJECTS = [
   },
   {
     id: "shoestore",
+    aliases: ["shoes-store"],
     title: "ShoeStore",
     category: "E-Commerce Website",
     description:
@@ -38,11 +40,10 @@ window.PROJECTS = [
       "This project can be used as an online footwear store interface where customers can browse shoes and explore products. It guides shoppers from the home page through categories, product details, cart, and checkout with a stylish, responsive design that works beautifully on any screen size.",
     technologies: ["HTML", "CSS", "JavaScript"],
     screenshots: [
-      "images/projects/shoestore/home.png",
-      "images/projects/shoestore/products.png",
-      "images/projects/shoestore/product-details.png",
-      "images/projects/shoestore/cart.png",
-      "images/projects/shoestore/checkout.png"
+      "shoes.png"
+    ],
+    captions: [
+      "Home Page (full page)"
     ],
     features: [
       "Shoe/product browsing",

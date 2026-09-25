@@ -23,12 +23,21 @@
   let shotIndex = 0;
   let openedFromPortfolio = false;
   let lastFocused = null;
+  let backToProjectsRequested = false;
 
   function getProject(id) {
-    return window.PROJECTS.find((project) => project.id === id) || null;
+    if (!id) return null;
+    const key = String(id).trim().toLowerCase();
+    return (
+      window.PROJECTS.find(function (project) {
+        if (project.id === key) return true;
+        return Array.isArray(project.aliases) && project.aliases.indexOf(key) !== -1;
+      }) || null
+    );
   }
 
   function shotAlt(project, src, index, total) {
+    if (src === FALLBACK) return project.title + " — screenshot coming soon";
     const caption = project.captions && project.captions[index];
     if (caption) return project.title + " — " + caption + " (screenshot " + (index + 1) + " of " + total + ")";
     const file = src.split("/").pop().replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
@@ -62,7 +71,8 @@
   }
 
   function renderDetail(project) {
-    const shots = project.screenshots;
+    const shots = Array.isArray(project.screenshots) ? project.screenshots.slice() : [];
+    if (shots.length === 0) shots.push(FALLBACK);
     const total = shots.length;
     const caseStudy = isCaseStudy(project);
     const tech = project.technologies.map((t) => "<span>" + t + "</span>").join("");
@@ -306,10 +316,25 @@
     if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
   }
 
+  function scrollToProjects() {
+    const target = document.getElementById("projects");
+    if (!target) return;
+    requestAnimationFrame(function () {
+      target.scrollIntoView();
+    });
+  }
+
   function goBackToProjects() {
+    backToProjectsRequested = true;
     if (openedFromPortfolio && window.history.length > 1) {
       window.history.back();
+      window.setTimeout(function () {
+        if (!backToProjectsRequested) return;
+        backToProjectsRequested = false;
+        window.location.hash = "#projects";
+      }, 500);
     } else {
+      backToProjectsRequested = false;
       window.location.hash = "#projects";
     }
   }
@@ -341,6 +366,11 @@
     homeView.hidden = false;
     document.body.classList.remove("project-open");
     document.title = baseTitle;
+    if (backToProjectsRequested) {
+      backToProjectsRequested = false;
+      scrollToProjects();
+      return;
+    }
     if (hash && hash.length > 1 && hash.indexOf("#/") !== 0) {
       const target = document.getElementById(hash.slice(1));
       if (target) {
@@ -351,6 +381,11 @@
     }
   }
 
+  function queryProjectId() {
+    const params = new URLSearchParams(window.location.search || "");
+    return params.get("id") || params.get("project") || "";
+  }
+
   function route() {
     const hash = window.location.hash || "";
     const match = hash.match(/^#\/project\/(.+)$/);
@@ -359,6 +394,18 @@
       if (project) {
         showProject(project);
         return;
+      }
+      showHome("#projects");
+      return;
+    }
+    if (!hash || hash === "#" || hash === "#home") {
+      const projectId = queryProjectId();
+      if (projectId) {
+        const project = getProject(projectId);
+        if (project) {
+          showProject(project);
+          return;
+        }
       }
     }
     showHome(hash);
