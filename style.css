@@ -92,3 +92,36 @@ body.cursor-active .cursor-dot{opacity:1}
 body.cursor-active .cursor-ring{opacity:.55}
 body.cursor-hover .cursor-ring{width:54px;height:54px;opacity:.9;background:var(--brand-soft)}
 body.cursor-hover .cursor-dot{width:4px;height:4px}
+
+/* Projects section — premium compact 3 / 2 / 1 responsive grid */
+#projects.section{padding:4.4rem 0}
+#projects .section-heading{max-width:620px;margin-bottom:2rem}
+#projects .projects-grid{max-width:1080px;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.1rem}
+#projects .project-card{display:flex;flex-direction:column;border-radius:14px}
+#projects .project-card:hover{transform:translateY(-3px)}
+#projects .project-image{height:auto;aspect-ratio:16/9}
+#projects .project-card:hover .project-image img{transform:scale(1.03)}
+#projects .project-content{display:flex;flex-direction:column;flex:1;padding:1.1rem 1.15rem 1.2rem}
+#projects .project-type{margin-bottom:.35rem;font-size:.7rem}
+#projects .project-content h3{margin-bottom:.45rem;font-size:1.08rem}
+#projects .project-content>p:not(.project-type){display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:.88rem;line-height:1.6}
+#projects .project-tags{margin-top:.8rem;gap:.35rem}
+#projects .project-tags span{padding:.28rem .58rem;font-size:.76rem}
+#projects .project-card-link{margin-top:auto;padding-top:.9rem;font-size:.92rem}
+@media(max-width:1000px){#projects .projects-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){#projects.section{padding:3.4rem 0}#projects .projects-grid{grid-template-columns:1fr;gap:1rem}#projects .project-content{padding:1.05rem 1.05rem 1.15rem}}
+
+/* Education section — compact 3 / 2 / 1 card grid */
+#education.section{padding:4.6rem 0}
+#education .section-heading{max-width:640px;margin-bottom:2.2rem}
+#education .edu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem}
+#education .edu-card{display:flex;flex-direction:column;align-items:flex-start;padding:1.6rem 1.5rem;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 7px 22px rgba(68,35,110,.04);transition:transform .25s,border-color .25s,box-shadow .25s}
+#education .edu-card:hover{border-color:#c7acef;box-shadow:var(--shadow);transform:translateY(-4px)}
+#education .edu-icon{width:46px;height:46px;display:grid;place-items:center;margin-bottom:1.05rem;border:1px solid #d7c3f5;border-radius:12px;color:var(--brand);background:#fbf9ff;box-shadow:0 0 0 5px #f4edff}
+#education .edu-label{margin-bottom:.45rem;color:var(--brand);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+#education .edu-card h3{margin-bottom:.45rem;font-size:1.15rem;line-height:1.35;letter-spacing:-.01em}
+#education .edu-school{flex:1;margin-bottom:.9rem;color:var(--muted);font-size:.92rem;line-height:1.6}
+#education .edu-meta{display:inline-flex;padding:.32rem .72rem;border-radius:999px;color:var(--brand);background:var(--brand-soft);font-size:.84rem;font-weight:800}
+.dark-theme #education .edu-icon{background:var(--surface-alt)}
+@media(max-width:1000px){#education .edu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){#education.section{padding:3.6rem 0}#education .edu-grid{grid-template-columns:1fr;gap:1.1rem}}

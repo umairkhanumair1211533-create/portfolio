@@ -122,5 +122,27 @@ window.PROJECTS = [
     ],
     liveDemo: "",
     github: ""
+  },
+  {
+    id: "safarone",
+    aliases: ["safarone-travels", "safaronetravels"],
+    title: "SafarOne Travels",
+    category: "Full-Stack Travel Booking Platform",
+    description:
+      "Travel Beyond Boundaries. SafarOne Travels is a modern, responsive travel booking platform designed to help users explore destinations, browse flights and hotels, and access travel services through a clean, user-friendly interface.",
+    longDescription:
+      "Travel Beyond Boundaries. SafarOne Travels is a modern, responsive travel booking platform designed to help users explore destinations, browse flights and hotels, and access travel services through a clean, user-friendly interface. It includes a flight search and booking interface for one-way and round-trip journeys, flight information covering airlines, timings, duration, stops, baggage, and ticket prices, hotel and destination sections, and an admin dashboard for managing airlines, flight information, prices, availability, and bookings. The backend uses APIs and database integration, with a responsive layout for desktop, tablet, and mobile.",
+    technologies: ["HTML", "CSS", "JavaScript", "Node.js", "Express.js", "MySQL", "REST APIs", "XAMPP"],
+    screenshots: [],
+    features: [
+      "Flight search and booking for one-way and round-trip journeys",
+      "Flight information: airlines, timings, duration, stops, baggage, and prices",
+      "Hotel and destination sections",
+      "Admin dashboard for airlines, bookings, prices, and availability",
+      "Backend APIs and database integration",
+      "Responsive design for desktop, tablet, and mobile"
+    ],
+    liveDemo: "",
+    github: ""
   }
 ];

@@ -30,8 +30,8 @@
   function initTyping() {
     const target = document.getElementById("typed-text");
     if (!target) return;
-    if (reducedMotion) { target.textContent = "modern web applications."; return; }
-    const words = ["modern web applications.", "responsive websites.", "interactive user interfaces."];
+    if (reducedMotion) { target.textContent = "Modern websites · Smart solutions · Seamless user experiences"; return; }
+    const words = ["Modern websites · Smart solutions · Seamless user experiences"];
     let word = 0, letter = 0, deleting = false;
     function type() {
       const text = words[word]; target.textContent = text.slice(0, letter);
@@ -68,7 +68,7 @@
     ring.setAttribute("aria-hidden", "true");
     document.body.append(ring, dot);
 
-    const hoverable = "a, button, input, textarea, select, label, .btn, .project-card, .skill-card, .focus-card, .timeline-item, .theme-toggle, .menu-toggle, [role='button']";
+    const hoverable = "a, button, input, textarea, select, label, .btn, .project-card, .skill-card, .focus-card, .edu-card, .theme-toggle, .menu-toggle, [role='button']";
     let targetX = window.innerWidth / 2;
     let targetY = window.innerHeight / 2;
     let ringX = targetX;

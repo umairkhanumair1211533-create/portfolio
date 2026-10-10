@@ -1,0 +1,20 @@
+{
+  "name": "umair-khan-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Umair Khan portfolio with secure AI voice assistant backend (Groq).",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.7",
+    "express": "^4.22.3",
+    "groq-sdk": "^1.6.0",
+    "multer": "^2.4.0"
+  }
+}

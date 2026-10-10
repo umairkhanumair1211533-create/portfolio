@@ -1,0 +1,480 @@
+/* ============================================================
+   AI Voice Agent — floating launcher + chat/voice panel
+   Uses the portfolio's design tokens (Inter, --brand purple).
+   ============================================================ */
+
+.va-launch {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 70;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  box-shadow: 0 14px 34px rgba(91, 33, 182, .38);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.va-launch i { font-size: 1.32rem; }
+.va-launch:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 18px 40px rgba(91, 33, 182, .45); }
+.va-launch:focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; }
+
+.va-launch-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(124, 58, 237, .45);
+  animation: va-pulse 2.8s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes va-pulse {
+  70% { box-shadow: 0 0 0 18px rgba(124, 58, 237, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+}
+
+/* ---------------- Panel shell ---------------- */
+
+.va-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 71;
+  width: min(386px, calc(100vw - 32px));
+  max-height: min(660px, calc(100vh - 132px));
+  max-height: min(660px, calc(100dvh - 132px));
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: 0 26px 70px rgba(40, 17, 72, .30);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(16px) scale(.97);
+  transform-origin: bottom right;
+  transition: opacity .22s ease, transform .22s ease;
+}
+
+.va-panel.is-open { opacity: 1; transform: none; }
+.va-panel[hidden] { display: none; }
+
+/* ---------------- Header ---------------- */
+
+.va-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+  padding: .9rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(124, 58, 237, .10), rgba(255, 255, 255, 0));
+}
+
+.va-identity { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+
+.va-avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #5b21b6);
+  box-shadow: 0 8px 18px rgba(91, 33, 182, .28);
+}
+
+.va-avatar i { font-size: 1rem; }
+
+.va-identity h2 { margin: 0; font-size: 1rem; letter-spacing: -.02em; }
+.va-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: .76rem;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.va-head-actions { display: flex; align-items: center; gap: .35rem; }
+
+.va-icon-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  background: var(--surface);
+  transition: color .2s, border-color .2s, background .2s, transform .2s;
+}
+
+.va-icon-btn:hover { color: var(--brand); border-color: #bba2e9; background: var(--brand-soft); transform: translateY(-2px); }
+.va-icon-btn[aria-pressed="true"] { color: #b42318; border-color: #f3b7b2; background: #fdecec; }
+.va-icon-btn.is-active { color: #fff; border-color: transparent; background: #ef4444; }
+.va-icon-btn[hidden] { display: none; }
+.va-icon-btn i { font-size: .85rem; }
+
+/* ---------------- Privacy notice ---------------- */
+
+.va-privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding: .7rem .95rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  background: #f6f2ff;
+  font-size: .77rem;
+  line-height: 1.5;
+}
+
+.va-privacy[hidden] { display: none; }
+.va-privacy.is-highlight { animation: va-flash 1.6s ease; }
+.va-privacy > i { margin-top: .18rem; color: var(--brand); }
+.va-privacy p { flex: 1; margin: 0; }
+
+.va-privacy-dismiss {
+  padding: 0 0 0 .4rem;
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  font-size: 1rem;
+  line-height: 1;
+}
+.va-privacy-dismiss:hover { color: var(--brand); }
+
+@keyframes va-flash {
+  0% { background: #e9ddff; }
+  100% { background: #f6f2ff; }
+}
+
+/* ---------------- Messages ---------------- */
+
+.va-messages {
+  flex: 1 1 auto;
+  min-height: 130px;
+  padding: 1rem .9rem .4rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  scrollbar-width: thin;
+  scrollbar-color: #cbb6ef transparent;
+}
+
+.va-msg { display: flex; align-items: flex-end; gap: .5rem; animation: va-in .28s ease both; }
+.va-msg-user { flex-direction: row-reverse; }
+
+.va-msg-avatar {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: .68rem;
+}
+
+.va-msg-assistant .va-msg-avatar { color: var(--brand); background: var(--brand-soft); }
+.va-msg-error .va-msg-avatar { color: #b42318; background: #fdecec; }
+
+.va-bubble {
+  margin: 0;
+  max-width: 82%;
+  padding: .62rem .85rem;
+  border-radius: 16px;
+  font-size: .92rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.va-msg-user .va-bubble {
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  border-bottom-right-radius: 6px;
+}
+
+.va-msg-assistant .va-bubble {
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 6px;
+}
+
+.va-msg-error .va-bubble {
+  color: #b42318;
+  background: #fdecec;
+  border: 1px solid #f6c9c5;
+  border-bottom-left-radius: 6px;
+}
+
+.va-typing { display: inline-flex; gap: 4px; align-items: center; padding: .3rem .1rem; }
+.va-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  opacity: .5;
+  animation: va-bounce 1.1s ease-in-out infinite;
+}
+.va-typing i:nth-child(2) { animation-delay: .16s; }
+.va-typing i:nth-child(3) { animation-delay: .32s; }
+
+@keyframes va-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: .4; }
+  40% { transform: translateY(-5px); opacity: 1; }
+}
+
+@keyframes va-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------- Suggestion chips ---------------- */
+
+.va-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  padding: .55rem .9rem .1rem;
+}
+
+.va-suggestions[hidden] { display: none; }
+
+.va-suggestions button {
+  padding: .4rem .75rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  background: var(--surface-alt);
+  font-size: .79rem;
+  font-weight: 700;
+  transition: transform .2s, border-color .2s, color .2s, background .2s;
+}
+
+.va-suggestions button:hover {
+  border-color: #bba2e9;
+  color: var(--brand);
+  background: var(--brand-soft);
+  transform: translateY(-2px);
+}
+
+/* ---------------- Status / state chip ---------------- */
+
+.va-state {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: .6rem .9rem 0;
+  padding: .55rem .8rem;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-size: .83rem;
+  font-weight: 700;
+}
+
+.va-state[hidden] { display: none; }
+.va-state-text { flex: 1; min-width: 0; }
+
+.va-state-error { color: #b42318; background: #fdecec; border-color: #f6c9c5; }
+.va-state-listening { color: #b42318; background: #fdecec; border-color: #f6c9c5; }
+
+.va-state-action {
+  padding: .3rem .7rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  color: inherit;
+  background: transparent;
+  font-size: .75rem;
+  font-weight: 800;
+}
+.va-state-action:hover { background: rgba(0, 0, 0, .06); }
+.va-state-action[hidden] { display: none; }
+
+/* animated indicators */
+.va-eq { display: inline-flex; align-items: flex-end; gap: 3px; height: 16px; }
+.va-eq i {
+  width: 3px;
+  height: 6px;
+  border-radius: 3px;
+  background: currentColor;
+  animation: va-eq .9s ease-in-out infinite;
+}
+.va-eq i:nth-child(2) { animation-delay: .15s; }
+.va-eq i:nth-child(3) { animation-delay: .3s; }
+.va-eq i:nth-child(4) { animation-delay: .45s; }
+
+@keyframes va-eq {
+  0%, 100% { height: 5px; }
+  50% { height: 16px; }
+}
+
+.va-dots { display: inline-flex; align-items: center; gap: 4px; height: 16px; }
+.va-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: va-bounce 1.1s ease-in-out infinite;
+}
+.va-dots i:nth-child(2) { animation-delay: .16s; }
+.va-dots i:nth-child(3) { animation-delay: .32s; }
+
+.va-wave { display: inline-flex; align-items: center; gap: 3px; height: 16px; }
+.va-wave i {
+  width: 3px;
+  height: 14px;
+  border-radius: 3px;
+  background: currentColor;
+  transform-origin: center;
+  animation: va-wave .75s ease-in-out infinite;
+}
+.va-wave i:nth-child(2) { animation-delay: .12s; }
+.va-wave i:nth-child(3) { animation-delay: .24s; }
+.va-wave i:nth-child(4) { animation-delay: .36s; }
+.va-wave i:nth-child(5) { animation-delay: .48s; }
+
+@keyframes va-wave {
+  0%, 100% { transform: scaleY(.35); }
+  50% { transform: scaleY(1); }
+}
+
+/* ---------------- Composer ---------------- */
+
+.va-form {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem .85rem;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.va-text {
+  flex: 1;
+  min-width: 0;
+  padding: .72rem .85rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline: 0;
+  color: var(--text);
+  background: var(--surface-alt);
+  font-size: .92rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.va-text::placeholder { color: var(--muted); opacity: .85; }
+.va-text:focus { border-color: #9c72df; box-shadow: 0 0 0 3px rgba(109, 40, 217, .12); }
+
+.va-mic {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  box-shadow: 0 8px 18px rgba(91, 33, 182, .3);
+  transition: transform .2s, background .2s, box-shadow .2s;
+}
+
+.va-mic:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(91, 33, 182, .38); }
+.va-mic i { font-size: 1.05rem; }
+
+.va-mic.is-recording {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 8px 18px rgba(185, 28, 28, .4);
+  animation: va-mic 1.3s ease-in-out infinite;
+}
+
+@keyframes va-mic {
+  0%, 100% { box-shadow: 0 8px 18px rgba(185, 28, 28, .4), 0 0 0 0 rgba(239, 68, 68, .45); }
+  60% { box-shadow: 0 8px 18px rgba(185, 28, 28, .4), 0 0 0 12px rgba(239, 68, 68, 0); }
+}
+
+.va-send {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--brand);
+  background: var(--surface-alt);
+  transition: transform .2s, background .2s, border-color .2s;
+}
+
+.va-send:hover { border-color: #bba2e9; background: var(--brand-soft); transform: translateY(-2px); }
+.va-send i { font-size: .95rem; }
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 620px) {
+  .va-launch { right: 16px; bottom: 16px; width: 56px; height: 56px; }
+  .va-panel {
+    right: 12px;
+    left: 12px;
+    bottom: 84px;
+    width: auto;
+    max-height: min(74vh, 620px);
+    max-height: min(74dvh, 620px);
+    transform-origin: bottom center;
+    border-radius: 20px;
+  }
+  .va-bubble { max-width: 88%; font-size: .9rem; }
+  .va-head { padding: .8rem .85rem; }
+  .va-messages { padding: .85rem .8rem .35rem; }
+  .va-form { padding: .65rem .7rem; gap: .4rem; }
+  .va-mic { width: 44px; height: 44px; }
+}
+
+@media (max-width: 400px) {
+  .va-suggestions { gap: .4rem; }
+  .va-suggestions button { font-size: .75rem; padding: .35rem .65rem; }
+}
+
+/* ---------------- Dark theme adjustments ---------------- */
+
+body.dark-theme .va-privacy { background: var(--surface-alt); }
+body.dark-theme .va-msg-error .va-bubble,
+body.dark-theme .va-state-error,
+body.dark-theme .va-state-listening { color: #ff9d95; background: rgba(185, 40, 35, .22); border-color: rgba(255, 120, 110, .3); }
+body.dark-theme .va-msg-avatar { background: var(--brand-soft); }
+body.dark-theme .va-head { background: linear-gradient(135deg, rgba(184, 138, 255, .14), rgba(0, 0, 0, 0)); }
+body.dark-theme .va-icon-btn[aria-pressed="true"] { color: #ff9d95; border-color: rgba(255, 120, 110, .35); background: rgba(185, 40, 35, .22); }
+
+/* ---------------- Reduced motion ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .va-panel { transition: opacity .12s linear; transform: none; }
+  .va-launch-ring,
+  .va-launch,
+  .va-mic.is-recording,
+  .va-eq i,
+  .va-wave i,
+  .va-typing i,
+  .va-dots i { animation: none; }
+  .va-msg { animation: none; }
+}
