@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="voice-agent.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/voice-agent.css">
 </head>
 <body>
   <header class="site-header"><div class="container nav-wrap">
@@ -29,7 +29,7 @@
         <div class="hero-actions"><a class="btn btn-primary" href="#contact">Let's work together <i class="fas fa-arrow-right"></i></a><a class="btn btn-secondary" href="#about">Explore my profile</a></div>
         <div class="social-links" aria-label="Social links"><a href="https://github.com/umairkhanumair1211533-create" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a><a href="https://www.linkedin.com/in/umair-khan-63662942b/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a><a href="mailto:umair.khan@email.com" aria-label="Email Umair"><i class="fas fa-envelope"></i></a></div>
       </div>
-      <div class="hero-visual"><div class="image-accent"></div><div class="hero-image-wrapper"><div class="hero-image"><img src="umair..png" alt="Portrait of Umair Khan" fetchpriority="high"></div></div><div class="experience-card"><strong>Focused on</strong><span>Modern web development</span></div></div>
+      <div class="hero-visual"><div class="image-accent"></div><div class="hero-image-wrapper"><div class="hero-image"><img src="images/umair..png" alt="Portrait of Umair Khan" fetchpriority="high"></div></div><div class="experience-card"><strong>Focused on</strong><span>Modern web development</span></div></div>
     </section>
     <section class="section about-section" id="about"><div class="container reveal about-layout">
       <div class="about-main">
@@ -71,11 +71,11 @@
     </div></section>
     <section class="section" id="projects"><div class="container reveal"><div class="section-heading"><p class="section-kicker">MY PROJECTS</p><h2>A selection of my work.</h2><p>Projects that demonstrate my focus on polished, responsive front-end experiences.</p></div><div class="projects-grid">
       <article class="project-card" data-project-id="mobilestore" role="button" tabindex="0" aria-label="View MobileStore project details">
-        <div class="project-image"><img src="mobile.png" alt="Homepage design for the MobileStore e-commerce website" loading="lazy"></div>
+        <div class="project-image"><img src="images/mobile.png" alt="Homepage design for the MobileStore e-commerce website" loading="lazy"></div>
         <div class="project-content"><p class="project-type">E-commerce website</p><h3>MobileStore</h3><p>A modern online mobile store interface with featured products, category browsing, customer testimonials, and a clear shopping journey.</p><div class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><span class="project-card-link">View Project <i class="fas fa-arrow-right"></i></span></div>
       </article>
       <article class="project-card" data-project-id="shoestore" role="button" tabindex="0" aria-label="View ShoeStore project details">
-        <div class="project-image"><img src="shoes.png" alt="Homepage design for a shoe store e-commerce website" loading="lazy"></div>
+        <div class="project-image"><img src="images/shoes.png" alt="Homepage design for a shoe store e-commerce website" loading="lazy"></div>
         <div class="project-content"><p class="project-type">E-commerce website</p><h3>ShoeStore</h3><p>A stylish shopping experience for footwear, designed to help customers discover products and browse with ease.</p><div class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><span class="project-card-link">View Project <i class="fas fa-arrow-right"></i></span></div>
       </article>
       <article class="project-card" data-project-id="luxe" role="button" tabindex="0" aria-label="View LUXE project details">
@@ -115,7 +115,7 @@
 
     <div class="va-privacy" id="va-privacy">
       <i class="fas fa-shield-halved" aria-hidden="true"></i>
-      <p>Voice is recorded only when you tap the microphone, sent once to be transcribed, and never stored. Typed questions are private too.</p>
+      <p>Voice is recorded only while the microphone is active, sent once to be transcribed after a short pause, and never stored. Typed questions are private too.</p>
       <button class="va-privacy-dismiss" id="va-privacy-dismiss" type="button" aria-label="Dismiss privacy notice">&times;</button>
     </div>
 
@@ -142,9 +142,9 @@
     </form>
   </section>
 
-  <script src="projects-data.js"></script>
-  <script src="script.js"></script>
-  <script src="project-detail.js"></script>
+  <script src="js/projects-data.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/project-detail.js"></script>
   <script>
     // Dev only: if the page is opened via Live Server (static, no backend),
     // send API calls to the local Node backend instead. No-op everywhere else.
@@ -152,6 +152,6 @@
       window.VOICE_API_BASE = "http://127.0.0.1:3000";
     }
   </script>
-  <script src="voice-agent.js"></script>
+  <script src="js/voice-agent.js"></script>
 </body>
 </html>

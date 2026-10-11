@@ -1,48 +1,69 @@
 # Umair Khan — Portfolio + AI Voice Assistant
 
 Static portfolio (HTML / CSS / JS) with a secure Groq-powered voice assistant.
-The backend hosts the site **and** the `/api/voice/*` endpoints, so nothing ever
-needs `localhost` in production.
+The backend hosts the frontend **and** the `/api/voice/*` endpoints, so nothing
+ever needs `localhost` in production.
 
 ## Project structure
 
-| Path | Purpose |
-| --- | --- |
-| `index.html`, `style.css`, `script.js` | Existing portfolio (no sections removed or redesigned) |
-| `voice-agent.css`, `voice-agent.js` | Voice assistant UI (launcher, chat/voice panel, states) |
-| `server/index.js` | **Backend entry point** — Express app, static hosting, API routes |
-| `server/lib/groq.js` | Official `groq-sdk` client (chat, transcription, text-to-speech) |
-| `server/knowledge.js` | Portfolio knowledge base — the only facts the assistant may state |
-| `server/lib/` | Validation, rate limiting, security headers, safe error mapping |
-| `.env` | Secrets (gitignored) · `.env.example` | Template |
-| `package.json` | `npm start` / `npm run dev` scripts |
+```
+fortfolio/
+├── frontend/                 # Everything the browser loads
+│   ├── index.html            # Portfolio page + voice assistant panel
+│   ├── project-detail.html   # Project deep-link redirect page
+│   ├── css/                  # style.css, voice-agent.css
+│   ├── js/                   # script.js, projects-data.js, project-detail.js, voice-agent.js
+│   ├── images/               # Portraits, project screenshots
+│   └── assets/               # Reserved for fonts/icons
+├── backend/                  # Node.js / Express — never served to browsers
+│   ├── index.js              # Entry point — app setup, static hosting, listen
+│   ├── routes/voice.js       # /api/health + /api/voice/* routes (rate limits, upload)
+│   ├── controllers/voiceController.js  # Request handlers
+│   ├── middleware/           # CORS, rate limiting, security headers, errors
+│   ├── lib/                  # Groq SDK wrapper, input validation
+│   ├── config/env.js         # Loads backend/.env, exports PORT
+│   ├── knowledge.js          # Portfolio knowledge base (assistant's only facts)
+│   ├── package.json          # npm start / npm run dev
+│   ├── .env                  # Secrets (gitignored)
+│   └── .env.example          # Template
+├── .gitignore
+└── README.md
+```
 
 ## Local setup
 
 ```bash
+cd backend
 npm install
-# open .env and replace the placeholder with your real Groq API key
+# open backend/.env and replace the placeholder with your real Groq API key
 npm run dev        # auto-restart on changes (node --watch)
 # or
 npm start          # plain start
 ```
 
-Then open **http://localhost:3000** (or the port printed in the terminal).
+Then open **http://localhost:3000** (or the port printed in the terminal). The
+server serves `frontend/` and the API from the same origin.
+
+### Running the frontend alone
+
+The frontend is plain static HTML/CSS/JS — no build step. You can open it with
+any static server (e.g. VS Code Live Server) from the `frontend/` folder, but
+the voice agent needs the backend for transcription and AI replies.
 
 > **Using VS Code Live Server (port 5500)?** Live Server is static-only, so `POST` to
-> it returns `405`. Keep `npm start` running: `index.html` auto-points API calls at
-> `http://127.0.0.1:3000` when the page is on port `5500`, and `.env` already allows
-> that origin in `ALLOWED_ORIGINS`. Opening **http://localhost:3000** directly needs
-> no extra setup.
+> it returns `405`. Keep `npm run dev` running in `backend/`: `frontend/index.html`
+> auto-points API calls at `http://127.0.0.1:3000` when the page is on port `5500`,
+> and `backend/.env` already allows that origin in `ALLOWED_ORIGINS`. Opening
+> **http://localhost:3000** directly needs no extra setup.
 
 ### Restarting the backend
 
-- **Local:** stop the process with `Ctrl+C`, then run `npm start` again.
-  With `npm run dev` the server restarts itself whenever files in `server/` change.
+- **Local:** stop the process with `Ctrl+C`, then run `npm start` again (from `backend/`).
+  With `npm run dev` the server restarts itself whenever backend files change.
 - **Railway:** Dashboard → your service → **⋯ → Restart**, or push a commit /
   use **Deploy**. Environment variables live under **Variables**.
 
-## Environment variables (`.env`)
+## Environment variables (`backend/.env`)
 
 | Variable | Required | Default | Purpose |
 | --- | --- | --- | --- |
@@ -70,37 +91,41 @@ responses or logs.
 
 Security: per-IP rate limiting (ask 12/min, transcribe 8/min, speak 6/min),
 body/file size limits, strict input validation, allow-listed file types,
-sanitized error responses, `.env`/`server/`/`node_modules/` blocked from the
+sanitized error responses, `backend/`/`.env`/`node_modules/` blocked from the
 static server, no secrets in logs or responses.
 
 ## Keeping answers truthful
 
-`server/knowledge.js` contains only facts that appear on the website (skills,
+`backend/knowledge.js` contains only facts that appear on the website (skills,
 education, projects, contact links). The prompt instructs the model to say
 information isn't listed when it isn't — no invented experience or clients.
 
 ## Deploying to Railway (production)
 
 1. Push this folder to GitHub (`.env` is gitignored — confirm with `git status`).
-2. Railway → **New Project** → deploy the repo (Root Directory = repo root).
-3. **Variables** → add `GROQ_API_KEY=your_real_key` (plus any optional vars above).
-4. **Start command:** `npm start` (Railway supplies `PORT`).
-5. Your site is then served from `https://<service>.up.railway.app` — the
+2. Railway → **New Project** → deploy the repo.
+3. **Root Directory:** `backend` (Railway runs `npm start` inside it).
+4. **Variables** → add `GROQ_API_KEY=your_real_key` (plus any optional vars above).
+5. **Start command:** `npm start` (Railway supplies `PORT`).
+6. Your site is then served from `https://<service>.up.railway.app` — the
    frontend calls the API on the same origin, so **no localhost is used**.
-6. Only if you host the static site separately: set
-   `window.VOICE_API_BASE = "https://<service>.up.railway.app"` in `index.html`
-   before `voice-agent.js`, and set `ALLOWED_ORIGINS` on Railway.
+7. Only if you host the static site separately: set
+   `window.VOICE_API_BASE = "https://<service>.up.railway.app"` in
+   `frontend/index.html` before `voice-agent.js`, and set `ALLOWED_ORIGINS` on
+   Railway.
 
 ## Verification performed
 
-- **API suite — 26/26 passed:** static hosting, blocked secret/server files,
-  validation (400/413/415), rate limiting (429), safe 503 with placeholder key,
-  no key material in responses, security headers.
-- **Browser suite — 33/33 passed (Chrome):** open/close (button, ✕, Esc),
-  greeting, typed questions, listening → processing → speaking → idle states,
-  stop-speaking and mute controls, error state + Retry, microphone permission
-  denied (typed chat still works), privacy notice, dark theme, mobile 390×844
-  layout, no console/page errors.
+- **Structure:** all browser assets in `frontend/` (html, css, js, images);
+  all server code, `.env`, and `node_modules` in `backend/`. No duplicates —
+  files were moved with `git mv` (history preserved).
+- **Backend:** starts with `node backend/index.js`, loads `backend/.env`.
+  `/api/health` → 200; `POST /api/voice/ask` with empty body → 400
+  `invalid_request`; unknown `/api/*` → JSON 404.
+- **Static hosting:** `/`, both HTML pages, both stylesheets, all four scripts,
+  and every image path (including `images/projects/*`) return 200.
+- **Security:** `/backend/*`, `/.env`, `/node_modules/*`, `/package.json`
+  return 404; SPA fallback serves `index.html` for unknown paths.
 
 Voice requests are only made to the same origin (or `VOICE_API_BASE`); no API
 key ever appears in HTML, CSS, JavaScript, or the repository.

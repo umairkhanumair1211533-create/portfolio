@@ -14,6 +14,12 @@
   // Once server TTS fails (e.g. Groq model terms not accepted yet), stop
   // calling it for the rest of the session and use browser voice instead.
   var serverVoiceBroken = false;
+  // Auto-send: after speech is heard, ~2s of continuous silence ends the
+  // recording, transcribes it, and asks the AI — no Stop/Send tap needed.
+  var SILENCE_TIMEOUT_MS = 2000;
+  var SPEECH_START_RMS = 0.025; // mic RMS treated as speech onset
+  var SPEECH_HOLD_RMS = 0.015; // below this a speech burst is considered over
+  var LEVEL_TICK_MS = 100;
   var GREETING =
     "Hi! I'm Umair's AI assistant. Ask me about his skills, projects, education, or how to get in touch.";
 
@@ -34,6 +40,15 @@
   var listenTicker = null;
   var autoStopTimer = null;
   var errorResetTimer = null;
+
+  var audioContext = null;
+  var analyser = null;
+  var levelSource = null;
+  var levelTicker = null;
+  var silenceTimer = null;
+  var speechDetected = false;
+  var speechActive = false;
+  var micStarting = false;
 
   function $(id) { return document.getElementById(id); }
 
@@ -162,7 +177,7 @@
     el.mic.classList.toggle("is-recording", next === "listening");
     el.mic.setAttribute(
       "aria-label",
-      next === "listening" ? "Stop listening" : "Ask with your voice"
+      next === "listening" ? "Cancel voice recording" : "Ask with your voice"
     );
     var micIcon = el.mic.querySelector("i");
     if (micIcon) micIcon.className = next === "listening" ? "fas fa-stop" : "fas fa-microphone";
@@ -504,10 +519,12 @@
   // ------------------------------------------------------------------
   function toggleMic() {
     if (state === "listening") {
-      stopRecording();
+      // While listening, the mic button cancels (discards) the recording.
+      // Sending happens automatically after ~2s of silence.
+      cancelRecording();
       return;
     }
-    if (busy) return;
+    if (busy || micStarting || state === "processing") return;
     stopSpeaking();
     showPrivacyNotice();
 
@@ -520,13 +537,22 @@
       return;
     }
 
+    micStarting = true;
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(function (stream) {
+        micStarting = false;
+        // Discard the stream if state changed while the permission prompt was open
+        // (panel closed, another recording started, or a question is in flight).
+        if (state !== "idle" || busy || !el.panel.classList.contains("is-open")) {
+          stream.getTracks().forEach(function (track) { track.stop(); });
+          return;
+        }
         mediaStream = stream;
         startRecording();
       })
       .catch(function () {
+        micStarting = false;
         voiceUnavailable(
           "Microphone access was blocked. Please allow the microphone, or type your question instead."
         );
@@ -567,6 +593,8 @@
 
     recordChunks = [];
     recordStartedAt = Date.now();
+    speechDetected = false;
+    speechActive = false;
     recorder.ondataavailable = function (event) {
       if (event.data && event.data.size) recordChunks.push(event.data);
     };
@@ -574,6 +602,7 @@
     recorder.start();
 
     setState("listening");
+    startSilenceDetection();
     listenTicker = window.setInterval(function () {
       var seconds = Math.min(MAX_RECORD_MS, Math.round((Date.now() - recordStartedAt) / 1000));
       el.stateText.textContent = "Listening… 0:" + String(seconds).padStart(2, "0");
@@ -587,6 +616,7 @@
     if (!recorder || recorder.state === "inactive") return;
     window.clearInterval(listenTicker);
     window.clearTimeout(autoStopTimer);
+    stopLevelAnalysis();
     try { recorder.stop(); } catch (e) { /* ignore */ }
   }
 
@@ -597,6 +627,7 @@
       recorder.onstop = null;
       try { recorder.stop(); } catch (e) { /* ignore */ }
     }
+    stopLevelAnalysis();
     recorder = null;
     recordChunks = [];
     releaseStream();
@@ -610,14 +641,83 @@
     }
   }
 
+  // ------------------------------------------------------------------
+  // Silence detection — auto-stop + auto-send after ~2s of silence
+  // ------------------------------------------------------------------
+  function startSilenceDetection() {
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return; // no analyser: manual cancel + 15s cap still work
+      audioContext = new Ctx();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0;
+      levelSource = audioContext.createMediaStreamSource(mediaStream);
+      levelSource.connect(analyser);
+      var samples = new Uint8Array(analyser.fftSize);
+
+      levelTicker = window.setInterval(function () {
+        if (!analyser || state !== "listening") return;
+        analyser.getByteTimeDomainData(samples);
+        var sum = 0;
+        for (var i = 0; i < samples.length; i++) {
+          var value = (samples[i] - 128) / 128;
+          sum += value * value;
+        }
+        var rms = Math.sqrt(sum / samples.length);
+        // Hysteresis: speech starts above SPEECH_START_RMS and ends below
+        // SPEECH_HOLD_RMS, so brief dips between words don't flicker.
+        if (rms >= (speechActive ? SPEECH_HOLD_RMS : SPEECH_START_RMS)) {
+          speechActive = true;
+          speechDetected = true;
+          resetSilenceTimer(); // user is speaking (or started again) — reset the 2s window
+        } else {
+          speechActive = false; // silence: the running timer counts toward auto-send
+        }
+      }, LEVEL_TICK_MS);
+    } catch (e) {
+      stopLevelAnalysis(); // graceful: auto-send off, recording still usable
+    }
+  }
+
+  function resetSilenceTimer() {
+    window.clearTimeout(silenceTimer);
+    silenceTimer = window.setTimeout(function () {
+      silenceTimer = null;
+      if (state === "listening" && !busy) stopRecording(); // auto-stop -> transcribe -> ask
+    }, SILENCE_TIMEOUT_MS);
+  }
+
+  function stopLevelAnalysis() {
+    window.clearInterval(levelTicker);
+    levelTicker = null;
+    window.clearTimeout(silenceTimer);
+    silenceTimer = null;
+    analyser = null;
+    if (levelSource) {
+      try { levelSource.disconnect(); } catch (e) { /* ignore */ }
+      levelSource = null;
+    }
+    if (audioContext) {
+      try { audioContext.close(); } catch (e) { /* ignore */ }
+      audioContext = null;
+    }
+  }
+
   function onRecorded() {
     var duration = Date.now() - recordStartedAt;
     var type = (recorder && recorder.mimeType) || "audio/webm";
     var blob = new Blob(recordChunks, { type: type });
+    var heardSpeech = speechDetected;
     recordChunks = [];
     recorder = null;
     releaseStream();
 
+    if (!heardSpeech) {
+      // Never upload silence or send an empty message.
+      refreshError("I didn't hear anything. Tap the mic and speak, or type your question.");
+      return;
+    }
     if (duration < MIN_RECORD_MS) {
       refreshError("That was too short to hear. Tap the mic and speak, or type your question.");
       return;
@@ -645,6 +745,8 @@
         refreshError("I couldn't catch that. Please try again, or type your question.");
         return;
       }
+      // Show recognized speech in the input; ask() renders it as a user bubble.
+      try { el.text.value = text; } catch (e) { /* ignore */ }
       await ask(text);
     } catch (err) {
       var message = friendlyError(err);

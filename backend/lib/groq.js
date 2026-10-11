@@ -4,7 +4,7 @@ import {
   mapProviderError,
   notConfigured,
   upstreamUnavailable,
-} from "./errors.js";
+} from "../middleware/errors.js";
 
 const DEFAULT_CHAT_MODEL = "openai/gpt-oss-120b";
 const FALLBACK_CHAT_MODELS = ["openai/gpt-oss-20b", "llama-3.3-70b-versatile"];

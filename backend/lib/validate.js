@@ -1,4 +1,4 @@
-import { badRequest, tooLarge, unsupportedMedia } from "./errors.js";
+import { badRequest, tooLarge, unsupportedMedia } from "../middleware/errors.js";
 
 export const MAX_QUESTION_LENGTH = 600;
 export const MAX_HISTORY_ITEMS = 6;

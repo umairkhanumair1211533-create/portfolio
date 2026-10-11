@@ -40,7 +40,7 @@ window.PROJECTS = [
       "This project can be used as an online footwear store interface where customers can browse shoes and explore products. It guides shoppers from the home page through categories, product details, cart, and checkout with a stylish, responsive design that works beautifully on any screen size.",
     technologies: ["HTML", "CSS", "JavaScript"],
     screenshots: [
-      "shoes.png"
+      "images/shoes.png"
     ],
     captions: [
       "Home Page (full page)"
