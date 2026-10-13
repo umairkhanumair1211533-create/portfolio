@@ -91,7 +91,12 @@
     setState("idle");
 
     if ("speechSynthesis" in window) {
-      try { window.speechSynthesis.getVoices(); } catch (e) { /* ignore */ }
+      refreshSynthVoices();
+      try {
+        window.speechSynthesis.addEventListener("voiceschanged", refreshSynthVoices);
+      } catch (e) {
+        window.speechSynthesis.onvoiceschanged = refreshSynthVoices;
+      }
     }
   });
 
@@ -463,6 +468,39 @@
     });
   }
 
+  var synthVoices = [];
+
+  function refreshSynthVoices() {
+    if (!("speechSynthesis" in window)) return;
+    try {
+      var list = window.speechSynthesis.getVoices();
+      if (list && list.length) synthVoices = list;
+    } catch (e) { /* keep the last known list */ }
+  }
+
+  function pickEnglishVoice(voices) {
+    var best = null;
+    var bestScore = -1;
+    for (var i = 0; i < voices.length; i++) {
+      var voice = voices[i];
+      var lang = String(voice.lang || "").toLowerCase();
+      if (!/^en(-|$)/.test(lang)) continue;
+
+      var name = String(voice.name || "");
+      var score = 1;
+      if (lang === "en-us") score += 3;
+      if (/natural|neural|enhanced|premium|siri|online|google/i.test(name)) score += 5;
+      if (voice.localService === false) score += 2;
+      if (/compact|espeak|robot/i.test(name)) score -= 4;
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = voice;
+      }
+    }
+    return best;
+  }
+
   function speakWithBrowser(text) {
     return new Promise(function (resolve) {
       if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance === "undefined") {
@@ -477,12 +515,8 @@
       utterance.rate = 1.03;
       utterance.pitch = 1;
 
-      var voices = [];
-      try { voices = window.speechSynthesis.getVoices() || []; } catch (e) { voices = []; }
-      var english = voices.filter(function (voice) { return /^en/i.test(voice.lang || ""); });
-      var preferred =
-        english.filter(function (voice) { return /natural|google|samantha|daniel|zira|female|male/i.test(voice.name || ""); })[0] ||
-        english[0];
+      refreshSynthVoices();
+      var preferred = pickEnglishVoice(synthVoices);
       if (preferred) {
         try { utterance.voice = preferred; } catch (e) { /* engine rejected the voice object */ }
       }
